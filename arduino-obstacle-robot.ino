@@ -2,28 +2,43 @@
  * Operates a ATTiny85 based robot that has basic collission detection.
  */
 
+// Pin configuration
 const int ledPin = 3;
 const int irPin = 4;
 const int leftMotorPin = 0;
 const int rightMotorPin = 1;
 
+// Other constants
+const int motorSpeed = 50;
+const int directionLeft = 1;
+const int directionRight = 0;
+
+/**
+ * Setup function
+ */
 void setup() {
   pinMode(ledPin, OUTPUT);
   pinMode(irPin, INPUT);
   pinMode(leftMotorPin, OUTPUT);
   pinMode(rightMotorPin, OUTPUT);
+  analogWrite(leftMotorPin, 0);
+  analogWrite(rightMotorPin, 0);
 
-  flashLed(10, 200); // Booting up; flash led
+  flashLed(2, 1000); // Booting up; flash led
 }
 
+/**
+ * Loop function
+ */
 void loop() {
   explore();
 }
 
-// Drive around and don't crash into anything
+/**
+ * Drive around and don't crash into anything
+ */
 void explore() {
   int obstacleDetected = 0;
-  drive(); // Start driving
 
   while (true) {
     // Check if we got an obstacle
@@ -33,41 +48,93 @@ void explore() {
     digitalWrite(ledPin, obstacleDetected);
 
     if (obstacleDetected) {
-      turn();
+        stop();
+        turnRandom();
     } else {
-      drive();
+        drive(100);
     }
   }
 }
 
-// Turn the robot randomly
-void turn() {
+/**
+ * Turn the robot randomly
+ */
+void turnRandom() {
   int direction = millis() & 1;
+  int turnTime = 50;
 
   while(detectObstacle()) {
-    digitalWrite(leftMotorPin, direction);
-    digitalWrite(rightMotorPin, !direction);
-
-    delay(50);
+    if (direction == directionLeft) {
+        turnLeft(turnTime);
+    }
+    else {
+        turnRight(turnTime);
+    }
   }
 }
 
-// Drive
-void drive() {
-  digitalWrite(leftMotorPin, HIGH);
-  digitalWrite(rightMotorPin, HIGH);
-
-  delay(100);
+/**
+ * Turn left
+ * int turnTime How long to turn for
+ * int direction What direction to turn to
+ */
+void turn(int turnTime, int direction) {
+    if (direction == directionLeft) {
+        analogWrite(leftMotorPin, motorSpeed);
+    } else {
+        analogWrite(rightMotorPin, motorSpeed);
+    }
+    delay(turnTime);
 }
 
-// Check the infrared sensor for obstacles
-int detectObstacle() {
-  int obstacleDetected = digitalRead(irPin);
+/**
+ * Turn left
+ * int turnTime How long to turn for
+ */
+void turnLeft(int turnTime) {
+    turn(turnTime, directionLeft);
+}
+
+/**
+ * Turn right
+ * int turnTime How long to turn for
+ */
+void turnRight(int turnTime) {
+    turn(turnTime, directionRight);
+}
+
+/**
+ * Drive
+ * int driveTime Time to drive for
+ */
+void drive(int driveTime) {
+  analogWrite(leftMotorPin, motorSpeed);
+  analogWrite(rightMotorPin, motorSpeed);
+
+  delay(driveTime);
+}
+
+/**
+ * Stop
+ */
+void stop() {
+  analogWrite(leftMotorPin, 0);
+  analogWrite(rightMotorPin, 0);
+}
+
+/**
+ * Check the infrared sensor for obstacles
+ */
+bool detectObstacle() {
+  bool obstacleDetected = digitalRead(irPin);
   return !obstacleDetected;
 }
 
-
-// Flash the led
+/**
+ * Flash the led
+ * int flashes How many times to flash
+ * int delayMs Ms interval
+ */
 void flashLed(int flashes, int delayMs) {
   while (flashes) {
     flashes--;
