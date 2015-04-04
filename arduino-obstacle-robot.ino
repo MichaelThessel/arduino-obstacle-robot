@@ -46,7 +46,7 @@ void turn() {
 
   while(detectObstacle()) {
     digitalWrite(leftMotorPin, direction);
-    digitalWrite(rightMotorPin, direction ^ 1);
+    digitalWrite(rightMotorPin, !direction);
 
     delay(50);
   }
@@ -63,8 +63,7 @@ void drive() {
 // Check the infrared sensor for obstacles
 int detectObstacle() {
   int obstacleDetected = digitalRead(irPin);
-  obstacleDetected = obstacleDetected ^ 1; // Invert
-  return obstacleDetected;
+  return !obstacleDetected;
 }
 
 
