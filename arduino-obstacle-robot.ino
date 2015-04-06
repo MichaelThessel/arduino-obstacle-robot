@@ -9,7 +9,7 @@ const int leftMotorPin = 0;
 const int rightMotorPin = 1;
 
 // Other constants
-const int motorSpeed = 50;
+const int motorSpeed = 100;
 const int directionLeft = 1;
 const int directionRight = 0;
 
@@ -24,7 +24,7 @@ void setup() {
   analogWrite(leftMotorPin, 0);
   analogWrite(rightMotorPin, 0);
 
-  flashLed(2, 1000); // Booting up; flash led
+  flashLed(20, 100); // Booting up; flash led
 }
 
 /**
