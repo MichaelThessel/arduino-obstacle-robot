@@ -136,8 +136,7 @@ bool detectObstacle() {
  * int delayMs Ms interval
  */
 void flashLed(int flashes, int delayMs) {
-  while (flashes) {
-    flashes--;
+  while (flashes--) {
     digitalWrite(ledPin, HIGH);
     delay(delayMs);
     digitalWrite(ledPin, LOW);
