@@ -9,7 +9,8 @@ const int leftMotorPin = 1;
 const int rightMotorPin = 0;
 
 // Other constants
-const int motorSpeed = 150;
+const int motorSpeed = 100;
+const int turnSpeed = 255;
 const int directionLeft = 1;
 const int directionRight = 0;
 
@@ -41,64 +42,51 @@ void explore() {
 
         // Check if we got an obstacle
         if (detectObstacleLeft()) {
-            turnRight(1000);
+            turnRight();
         } else if (detectObstacleRight()) {
-            turnLeft(1000);
+            turnLeft();
         } else {
-            move(50);
+            move();
         }
+
+        delay(50);
     }
 }
 
 /**
  * Turn
- * int turnTime How long to turn for
  * int direction What direction to turn to
  */
-void turn(int turnTime, int direction) {
-    stop();
-
+void turn(int direction) {
     if (direction == directionLeft) {
-        analogWrite(leftMotorPin, motorSpeed);
+        analogWrite(rightMotorPin, 0);
+        analogWrite(leftMotorPin, turnSpeed);
     } else {
-        analogWrite(rightMotorPin, motorSpeed);
+        analogWrite(leftMotorPin, 0);
+        analogWrite(rightMotorPin, turnSpeed);
     }
-    delay(turnTime);
 }
 
 /**
  * Turn left
- * int turnTime How long to turn for
  */
-void turnLeft(int turnTime) {
-    turn(turnTime, directionLeft);
+void turnLeft() {
+    turn(directionLeft);
 }
 
 /**
  * Turn right
- * int turnTime How long to turn for
  */
-void turnRight(int turnTime) {
-    turn(turnTime, directionRight);
+void turnRight() {
+    turn(directionRight);
 }
 
 /**
  * Move
- * int moveTime Time to move for
  */
-void move(int moveTime) {
+void move() {
     analogWrite(leftMotorPin, motorSpeed);
     analogWrite(rightMotorPin, motorSpeed);
-
-    delay(moveTime);
-}
-
-/**
- * Stop
- */
-void stop() {
-    analogWrite(leftMotorPin, 0);
-    analogWrite(rightMotorPin, 0);
 }
 
 /**
